@@ -1,0 +1,1 @@
+# airstack-nextjs-cronjob-boilerplate
