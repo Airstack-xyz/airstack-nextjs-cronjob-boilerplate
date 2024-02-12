@@ -1,11 +1,34 @@
-export async function GET() {
-  const result = await fetch(
-    "http://worldtimeapi.org/api/timezone/America/Chicago",
-    {
-      cache: "no-store",
-    }
-  );
-  const data = await result.json();
+import { init, fetchQuery } from "@airstack/node";
 
-  return Response.json({ datetime: data.datetime });
+init(process.env.AIRSTACK_API_KEY ?? "");
+
+const query = /* GraphQL */ `
+  query MyQuery {
+    Socials(
+      input: {
+        filter: {
+          dappName: { _eq: farcaster }
+          profileName: { _eq: "dwr.eth" }
+        }
+        blockchain: ethereum
+      }
+    ) {
+      Social {
+        fnames
+        userId
+        profileName
+        userAddress
+        userAssociatedAddresses
+        followerCount
+        followingCount
+        profileImage
+      }
+    }
+  }
+`;
+
+export async function GET() {
+  const { data, error } = await fetchQuery(query);
+
+  return Response.json({ data, error });
 }
